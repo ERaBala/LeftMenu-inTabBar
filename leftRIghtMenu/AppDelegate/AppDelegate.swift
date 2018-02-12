@@ -12,10 +12,15 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var drawerContainer: MMDrawerController?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+
         // Override point for customization after application launch.
+        
+        buildNavigationDrawer()
+
         return true
     }
 
@@ -41,6 +46,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    
+    func buildNavigationDrawer()
+    {
+        
+        // Instantiate Main.storyboard
+        let mainStoryBoard:UIStoryboard = UIStoryboard(name:"Main", bundle:nil)
+        
+        // Create View Controllers
+        let mainPage:TabBarViewController = mainStoryBoard.instantiateViewController(withIdentifier: "TabBarViewController") as! TabBarViewController
+        
+        let leftSideMenu:LeftSideViewController = mainStoryBoard.instantiateViewController(withIdentifier: "LeftSideViewController") as! LeftSideViewController
+        
+       // let rightSideMenu:RightSideViewController = mainStoryBoard.instantiateViewControllerWithIdentifier("RightSideViewController") as! RightSideViewController
+        
+        
+        
+        // Wrap into Navigation controllers
+        let leftSideMenuNav = UINavigationController(rootViewController:leftSideMenu)
+        //let rightSideMenuNav = UINavigationController(rootViewController:rightSideMenu)
+        
+        // Cerate MMDrawerController
+        drawerContainer = MMDrawerController(center: mainPage, leftDrawerViewController: leftSideMenuNav)
+        
+       // drawerContainer = MMDrawerController(centerViewController: mainPage, leftDrawerViewController: leftSideMenuNav, rightDrawerViewController: rightSideMenuNav)
+        
+        drawerContainer!.openDrawerGestureModeMask = MMOpenDrawerGestureMode.panningCenterView
+        drawerContainer!.closeDrawerGestureModeMask = MMCloseDrawerGestureMode.panningCenterView
+        
+        // Assign MMDrawerController to our window's root ViewController
+        window?.rootViewController = drawerContainer
+        
+    }
 
 }
 
